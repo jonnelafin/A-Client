@@ -5,7 +5,7 @@ extends Control
 # var a = 2
 # var b = "text"
 var f = 0
-var host = "http://0.0.0.0:5000" #"https://aplusminus.herokuapp.com"
+var host = "http://aplusminus.herokuapp.com"#"http://0.0.0.0:5000" #"https://aplusminus.herokuapp.com"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,11 +13,13 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	var headers = ["Access-Control-Allow-Origin"]
 	if f%400 == 0:
 		print("Refreshing messages...")
-		$Users.request(host + "/list")
-		$Me.request(host + "/get_my_ip")
-		$Chat.request(host + "/history")
+		$Users.request(host + "/list", headers)
+		$Me.request(host + "/get_my_ip", headers)
+	if f%100 == 0:
+		$Chat.request(host + "/history", headers)
 	f = f + 1
 
 
@@ -69,7 +71,7 @@ func _make_post_request(url, data_to_send, use_ssl):
 #		query = query + i + "=" + data_to_send[i]
 	print(query)
 	# Add 'Content-Type' header:
-	var headers = ["Content-Type: application/json"]
+	var headers = ["Content-Type: application/json", "Access-Control-Allow-Origin"]
 #	$LineEdit/Send.request(url, headers, use_ssl, HTTPClient.METHOD_POST, query)
 	$LineEdit/Send.request(url, headers, false, HTTPClient.METHOD_POST, query)
 
